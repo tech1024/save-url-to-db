@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Previews</title>
+    <style>
+        .url-preview {
+            margin-bottom: 50px;
+        }
+
+    </style>
+     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const previews = document.querySelectorAll('.url-preview');
+            previews.forEach(preview => {
+                const url = preview.getAttribute('data-url');
+                const apiKey = '8aea7754eac4a05e2feb2d';  // 请替换为您的 Iframely API 密钥
+                fetch(`https://iframe.ly/api/oembed?url=${encodeURIComponent(url)}&api_key=${apiKey}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            preview.innerHTML = `Error loading preview for ${url}`;
+                        } else {
+                            console.log(data.html)
+
+                            preview.innerHTML = data.html || `
+                                <div>
+                                    <h3>${data.meta.title}</h3>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        preview.innerHTML = `Error loading preview for ${url}`;
+                        console.error('Error fetching Iframely data:', error);
+                    });
+            });
+        });
+        
+    </script>
+</head>
+<body>
+    <div id="urlPreviews" style="width: 100%;" >
+
+        <div style="display: flex; flex-flow: column; align-items: center; justify-content: center;">
+            {% for url in urls %}
+            <div class="url-preview" data-url="{{ url.url }}" style="width: 33%;">
+                
+                Loading preview for {{ url.url }}...
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom: 56.25%; padding-top: 120px;"><a href="https://github.com/jackyzha0/quartz" data-iframely-url="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fgithub.com%2Fjackyzha0%2Fquartz&key=ed85749701edcf8e0cb068290bead59e"></a></div></div><script async src="//cdn.iframe.ly/embed.js" charset="utf-8"></script>
